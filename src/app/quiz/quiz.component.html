@@ -1,0 +1,85 @@
+<!--  ng generate component quiz (creat folder quiz)-->
+<div class="main vertical-center">
+    <div class="container mt-3 d-flex justify-content-center">
+        <input type="radio" name="btnradio" id="btnradio1" autocomplete="off" [checked]="viewMode === 'each'" (click)="viewMode = 'each'">
+        <label for="btnradio1" class="btn btn-success">&nbsp;Each Question&nbsp;</label>
+        <input type="radio" name="btnradio" id="btnradio2" autocomplete="off" [checked]="viewMode === 'list'" (click)="viewMode = 'list'">
+        <label for="btnradio2" class="btn btn-success" (click)="onClickQuestionList()">&nbsp;Question List&nbsp;</label>
+    </div>
+    <ng-container *ngIf="viewMode === 'each'; else questionList">
+        <!-- แสดงคำถาม -->
+        <ng-template [ngIf]="!isEnd" [ngIfElse]="showScore">
+            <div class="container" style="max-width: 800px;">
+                <h2>🟠 Question {{currentQuestionIndex + 1}} of {{questions.length}} 🟠</h2>
+                <h3 class="mb-3 mt-3">{{questions[currentQuestionIndex].text}}</h3>
+                <div class="row">
+                    <div class="col text-center">
+                        <img *ngIf="questions[currentQuestionIndex].image" [src]="questions[currentQuestionIndex].image">
+                    </div>
+                </div>
+                <div class="row g-2 mt-2">
+                    <div *ngFor="let choice of questions[currentQuestionIndex].choices" class="col-xs-12 col-md-6">
+                        <div class="h5">
+                            ⭕ The Answer is : {{choice.text}}
+                        </div>
+                        <div>
+                            <img *ngIf="choice.image" [src]="choice.image">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </ng-template>
+        <div class="row mt-3">
+            <div class="col text-center">
+                <button (click)="onClickPrevious()" class="btn btn-success mx-2" [disabled]="currentQuestionIndex === 0">
+                    <-- Previous 
+                </button>
+                <button (click)="onClickNext()" class="btn btn-success mx-2" [disabled]="currentQuestionIndex === questions.length - 1">
+                    Next -->
+                </button>
+            </div>
+        </div>
+        <!-- แสดงคะแนน -->
+        <ng-template #showScore>
+            <div class="container" style="max-width: 800px;">
+                <div class="row">
+                    <div class="col-12 text-center h2">
+                        Your score : {{score}}
+                    </div>
+                    <div class="col-12 text-center h2">
+                        <div *ngIf="usedQuestion.length === usedAnswer.length">
+                            <ul style="text-align: left;">
+                                <div class="h3">
+                                    <ng-container *ngFor="let item of usedQuestion; let i = index">
+                                        <li class="h4">
+                                            {{ item }}<br />
+                                            : {{ usedAnswer[i] }}
+                                        </li>
+                                    </ng-container>
+                                </div>
+                            </ul>
+                        </div>
+                        <button (click)="onclickNewQuiz()" class="btn btn-success">
+                            New Quiz
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </ng-template>
+    </ng-container>
+    <ng-template #questionList>
+        <div class="container" style="max-width: 800px;">
+            <h2>🟠 Question List 🟠 </h2>
+            <ul style="text-align: left;">
+                <li *ngFor="let question of questions; let i = index">
+                    <div class="h4">
+                        {{ question.text }}
+                    </div>
+                    <div class="h5">
+                        ⭕ The Answer is: {{ getAnswerForQuestion(question) }}
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </ng-template>
+</div>
